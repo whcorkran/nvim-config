@@ -210,7 +210,7 @@ return {
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -220,7 +220,6 @@ return {
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         --
-
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -236,6 +235,19 @@ return {
           },
         },
       }
+
+      -- Activate python venv with this hook
+      vim.api.nvim_create_user_command('UseVenv', function()
+        local venv = vim.fn.getcwd() .. '/.venv'
+        if vim.fn.isdirectory(venv) == 1 then
+          vim.env.VIRTUAL_ENV = venv
+          vim.env.PATH = venv .. '/bin:' .. vim.env.PATH
+          vim.notify('Using venv: ' .. venv, vim.log.levels.INFO)
+          vim.cmd 'LspRestart pyright'
+        else
+          vim.notify('No .venv found in ' .. vim.fn.getcwd(), vim.log.levels.WARN)
+        end
+      end, { desc = 'Use local .venv for Pyright and restart LSP' })
 
       -- Ensure the servers and tools above are installed
       --
@@ -253,6 +265,7 @@ return {
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'ruff',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
