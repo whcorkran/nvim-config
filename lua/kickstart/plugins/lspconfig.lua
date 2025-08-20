@@ -218,7 +218,7 @@ return {
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+        ts_ls = {},
         --
         lua_ls = {
           -- cmd = { ... },
@@ -248,6 +248,28 @@ return {
           vim.notify('No .venv found in ' .. vim.fn.getcwd(), vim.log.levels.WARN)
         end
       end, { desc = 'Use local .venv for Pyright and restart LSP' })
+
+      -- Activate conda env with this hook
+      vim.api.nvim_create_user_command('UseConda', function(opts)
+        local env = opts.args
+        if env == '' then
+          vim.notify('No environment specified', vim.log.levels.WARN)
+          return
+        end
+        local path = vim.fn.expand('~/anaconda3/envs/' .. env)
+
+        if vim.fn.isdirectory(path) == 0 then
+          vim.notify('Environment not found', vim.log.levels.WARN)
+          return
+        end
+        vim.env.CONDA_PREFIX = path
+        vim.env.CONDA_DEFAULT_ENV = env
+        vim.env.CONDA_SHLVL = 1
+        vim.env.VIRTUAL_ENV = path
+        vim.env.PATH = path .. '/bin:' .. vim.env.PATH
+        vim.notify('Activated conda env: ' .. env)
+        vim.cmd 'LspRestart pyright'
+      end, { desc = 'Use an existing conda (provided as an argument) environment for Pyright and restart LSP', nargs = 1 })
 
       -- Ensure the servers and tools above are installed
       --
