@@ -16,10 +16,14 @@ return {
   opts = {
     filesystem = {
       window = {
+        width = 30,
+        position = 'left',
+        follow_current_file = true,
         mappings = {
           ['\\'] = 'close_window',
         },
       },
+      hijack_netrw_behavior = 'disabled', -- or "open_default" / "open_current"
     },
   },
 }

@@ -40,7 +40,7 @@ return {
       -- type in the prompt window. You'll see a list of `help_tags` options and
       -- a corresponding preview of the help.
       --
-      -- Two important keymaps to use while in Telescope are:
+      -- Two important keymaps to use while in Telescope are
       --  - Insert mode: <c-/>
       --  - Normal mode: ?
       --
@@ -64,9 +64,18 @@ return {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          fzf = {
+            case_mode = 'smart_case',
+            fuzzy = false, -- alphabetic sort
+            override_generic_sorter = true,
+            override_file_sorter = true,
+          },
           file_browser = {
             hijack_netrw = true,
             grouped = true,
+            select_buffer = true,
+            sorting_strategy = 'ascending',
+            hidden = false,
           },
         },
       }
@@ -80,12 +89,6 @@ return {
       vim.keymap.set('n', '<leader>fb', function()
         require('telescope').extensions.file_browser.file_browser {
           path = vim.fn.expand '%:p:h',
-          select_buffer = true,
-          sorter = require('telescope').extensions.fzf.native_fzf_sorter {
-            case_mode = 'smart_case',
-            fuzzy = false,
-          }, -- alphabetic sort
-          sorting_strategy = 'ascending',
         }
       end, { desc = 'File Browser' })
 
@@ -100,7 +103,7 @@ return {
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<lebder>sb', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
