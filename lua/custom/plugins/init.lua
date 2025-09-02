@@ -13,29 +13,17 @@ return {
     dependencies = { 'nvim-telescope/telescope.nvim', 'nvim-lua/plenary.nvim' },
   },
   {
-    'ThePrimeagen/harpoon',
-    branch = 'harpoon2',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      local harpoon = require 'harpoon'
-      harpoon:setup {} -- or just harpoon:setup()
-
-      -- Keymaps
-      vim.keymap.set('n', '<leader>fm', function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end)
-
-      vim.keymap.set('n', '<leader>a', function()
-        harpoon:list():add()
-      end, { desc = 'Harpoon: Add file' })
-
-      vim.keymap.set('n', '<leader>b', function()
-        harpoon:list():prev()
-      end, { desc = 'Harpoon: Previous mark' })
-
-      vim.keymap.set('n', '<leader>w', function()
-        harpoon:list():next()
-      end, { desc = 'Harpoon: Next mark' })
+      vim.opt.cmdheight = 0
+      vim.opt.laststatus = 3
+      require('lualine').setup {
+        options = {
+          globalstatus = true,
+          theme = 'auto',
+        },
+      }
     end,
   },
 }

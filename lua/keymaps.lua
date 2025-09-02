@@ -5,8 +5,20 @@
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- fast quit
+vim.keymap.set('n', 'gq', function()
+  vim.cmd ':bd'
+end, { desc = 'Close Buffer' })
+
+-- buffer cycling
+vim.keymap.set('n', '<Tab>', function()
+  vim.cmd ':bn'
+end, { desc = 'Cycle between buffers' })
+
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>e', function()
+  vim.diagnostic.open_float(nil, { focus = false })
+end, { desc = 'View diagnostic in floating window' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -49,13 +61,8 @@ vim.keymap.set('n', '<leader>p', '"+p')
 vim.keymap.set('v', '<leader>p', '"+p')
 
 -- git
-vim.keymap.set('n', '<leader>gt', vim.cmd.Git)
-
--- LSP
-
--- show error on cursor hover
-vim.api.nvim_create_autocmd('CursorHold', {
-  callback = function()
-    vim.diagnostic.open_float(nil, { focus = false })
-  end,
-})
+local fugitive_height = 12
+vim.keymap.set('n', '<leader>gt', function()
+  vim.cmd 'G'
+  vim.cmd('resize' .. fugitive_height)
+end, { desc = 'Git status (bottom split, fixed height)' })

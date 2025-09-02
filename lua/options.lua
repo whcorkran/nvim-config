@@ -2,7 +2,7 @@
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-
+vim.o.termguicolors = true
 vim.o.expandtab = true
 vim.o.tabstop = 4
 vim.o.softtabstop = 4

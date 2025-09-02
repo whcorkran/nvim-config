@@ -34,6 +34,7 @@ return {
           MatchParen = { fg = 'gold', bold = true },
         },
       }
+      vim.cmd 'colorscheme rose-pine-moon'
     end,
   },
   {
@@ -43,7 +44,6 @@ return {
     ---@type solarized.config
     opts = { variant = 'winter' },
     config = function(_, opts)
-      vim.o.termguicolors = true
       vim.o.background = 'dark'
       require('solarized').setup(opts)
     end,
@@ -57,7 +57,6 @@ return {
       require('vague').setup {
         -- optional configuration here
       }
-      vim.cmd 'colorscheme vague'
     end,
   },
 }
