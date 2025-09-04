@@ -76,6 +76,7 @@ return {
             select_buffer = true,
             sorting_strategy = 'ascending',
             hidden = false,
+            initial_mode = 'normal',
           },
         },
       }

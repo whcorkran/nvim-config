@@ -236,7 +236,7 @@ return {
         },
       }
 
-      -- Activate python venv with this hook
+      -- Activate python venv in nvim cwd with this hook
       vim.api.nvim_create_user_command('UseVenv', function()
         local venv = vim.fn.getcwd() .. '/.venv'
         if vim.fn.isdirectory(venv) == 1 then

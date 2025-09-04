@@ -2,6 +2,19 @@ return {
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
+      -- Startup Screen
+      local starter = require 'mini.starter'
+      starter.setup {
+        items = {
+          starter.sections.recent_files(10, false),
+          starter.sections.telescope(),
+        },
+        content_hooks = {
+          starter.gen_hook.adding_bullet(),
+          starter.gen_hook.aligning('center', 'center'),
+        },
+      }
+
       -- Better Around/Inside textobjects
       --
       -- Examples:
@@ -18,6 +31,8 @@ return {
       require('mini.surround').setup()
 
       -- Simple and easy statusline.
+      -- NOTE: Replaced by lualine
+      --
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
       -- local statusline = require 'mini.statusline'
