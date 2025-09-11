@@ -6,6 +6,7 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- fast quit
+-- close nvim if we enter the empty buffer
 vim.keymap.set('n', 'gq', function()
   vim.cmd ':bd'
 end, { desc = 'Close Buffer' })
@@ -23,7 +24,7 @@ vim.keymap.set('n', '<A-k>', ':m .-2<CR>==')
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
 
--- Diagnostic keymaps
+-- Show diagnostic
 vim.keymap.set('n', '<leader>e', function()
   vim.diagnostic.open_float(nil, { focus = false })
 end, { desc = 'View diagnostic in floating window' })
@@ -41,12 +42,6 @@ vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
---
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`

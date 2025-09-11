@@ -238,16 +238,17 @@ return {
 
       -- Activate python venv in nvim cwd with this hook
       vim.api.nvim_create_user_command('UseVenv', function()
-        local venv = vim.fn.getcwd() .. '/.venv'
+        local groot = vim.fn.FugitiveGitDir()
+        local venv = vim.fn.fnamemodify(groot, ':h') .. '/.venv'
         if vim.fn.isdirectory(venv) == 1 then
           vim.env.VIRTUAL_ENV = venv
           vim.env.PATH = venv .. '/bin:' .. vim.env.PATH
           vim.notify('Using venv: ' .. venv, vim.log.levels.INFO)
           vim.cmd 'LspRestart pyright'
         else
-          vim.notify('No .venv found in ' .. vim.fn.getcwd(), vim.log.levels.WARN)
+          vim.notify('No .venv found at git root ' .. venv, vim.log.levels.WARN)
         end
-      end, { desc = 'Use local .venv for Pyright and restart LSP' })
+      end, { desc = 'Use local .venv at git root for Pyright and restart LSP' })
 
       -- Activate conda env with this hook
       vim.api.nvim_create_user_command('UseConda', function(opts)
