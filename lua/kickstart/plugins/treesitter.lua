@@ -28,7 +28,7 @@ return {
             -- functions
             ['af'] = '@function.outer',
             ['if'] = '@function.inner',
-            ['ac'] = '@class.inner',
+            ['ac'] = '@class.outer',
             ['ic'] = '@class.inner',
           },
         },

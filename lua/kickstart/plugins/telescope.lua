@@ -56,12 +56,11 @@ return {
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
+        --   border = false,
         -- },
         pickers = {
           buffers = dropdown {
+            border = false,
             previewer = false,
             layout_config = { width = 0.45, height = 0.35 },
             sort_mru = true,
@@ -113,6 +112,11 @@ return {
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><Space>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>sc', function()
+        builtin.colorscheme {
+          ignore_builtins = true,
+        }
+      end, { desc = '[S]earch [C]olorscheme' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()

@@ -7,8 +7,13 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- fast quit
 -- close nvim if we enter the empty buffer
-vim.keymap.set('n', 'gq', function()
-  vim.cmd ':bd'
+vim.keymap.set('n', 'Q', function()
+  local buffers = vim.fn.getbufinfo { buflisted = 1 }
+  if #buffers <= 1 then
+    vim.cmd ':q'
+  else
+    vim.cmd ':bd'
+  end
 end, { desc = 'Close Buffer' })
 
 -- buffer cycling
