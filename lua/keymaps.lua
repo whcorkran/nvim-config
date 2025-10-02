@@ -9,6 +9,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- close nvim if we enter the empty buffer
 vim.keymap.set('n', 'Q', function()
   local buffers = vim.fn.getbufinfo { buflisted = 1 }
+
   if #buffers <= 1 then
     vim.cmd ':q'
   else

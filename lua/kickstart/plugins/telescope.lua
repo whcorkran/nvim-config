@@ -50,6 +50,17 @@ return {
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+
+      -- Let 'Q' cleanly close Telescope pickers
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'TelescopePrompt', 'TelescopeResults' },
+        callback = function(ev)
+          vim.keymap.set('n', 'Q', function()
+            -- uses Telescope’s actions to close
+            pcall(require('telescope.actions').close, require('telescope.actions.state').get_current_picker(ev.buf))
+          end, { buffer = ev.buf, silent = true })
+        end,
+      })
       local dropdown = require('telescope.themes').get_dropdown
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
@@ -73,7 +84,7 @@ return {
           },
           fzf = {
             case_mode = 'smart_case',
-            fuzzy = false, -- alphabetic sort
+            fuzzy = true, -- alphabetic sort
             override_generic_sorter = true,
             override_file_sorter = true,
           },
