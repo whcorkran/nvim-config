@@ -68,6 +68,36 @@ return {
         --
         defaults = {
           border = false,
+          layout_strategy = 'flex',
+          layout_config = {
+            horizontal = {
+              preview_width = 0.66,
+              prompt_position = 'top',
+            },
+            vertical = { preview_height = 0.55 },
+            width = 0.96,
+            height = 0.92,
+          },
+          sorting_strategy = 'ascending',
+          prompt_prefix = '   ',
+          selection_caret = ' ',
+          results_title = false,
+          dynamic_preview_title = true,
+          winblend = 4, -- subtle transparency
+          path_display = { 'smart', 'truncate' }, -- filename-forward, short paths
+          vimgrep_arguments = {
+            'rg',
+            '--follow',
+            '--hidden',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--trim',
+            '-g',
+            '!**/.git/*',
+          },
         },
         pickers = {
           buffers = dropdown {
@@ -94,6 +124,7 @@ return {
             hidden = false,
             initial_mode = 'normal',
           },
+          buffers = { border = true },
         },
       }
 

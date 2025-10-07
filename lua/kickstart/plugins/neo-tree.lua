@@ -16,7 +16,6 @@ return {
   opts = {
     filesystem = {
       follow_current_file = { enabled = true }, -- highlight the active file
-      hijack_netrw_behavior = 'open_default', -- replace netrw
       filtered_items = { hide_dotfiles = false }, -- show dotfiles if you like
       use_libuv_file_watcher = true, -- auto-refresh on change
     },
@@ -37,13 +36,14 @@ return {
     },
 
     window = {
-      width = 32,
+      width = 40,
       mappings = {
         ['<space>'] = 'toggle_node',
         ['<cr>'] = 'open',
         ['a'] = 'add', -- new file
         ['d'] = 'delete',
         ['r'] = 'rename',
+        ['/'] = 'fuzzy_finder',
       },
     },
   },
