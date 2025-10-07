@@ -21,7 +21,17 @@ return {
       require('lualine').setup {
         options = {
           globalstatus = true,
+          section_separators = '',
+          component_separators = '|',
           theme = 'auto',
+        },
+        sections = {
+          lualine_a = { 'mode' },
+          lualine_b = { { 'buffers', mode = 2, symbols = { modified = ' ●' }, alternate_file = '' } }, -- 👈 shows all buffers
+          lualine_c = { nil },
+          lualine_x = { 'encoding', 'filetype' },
+          lualine_y = { 'progress' },
+          lualine_z = { 'location' },
         },
       }
     end,

@@ -15,15 +15,36 @@ return {
   },
   opts = {
     filesystem = {
-      window = {
-        width = 30,
-        position = 'left',
-        follow_current_file = true,
-        mappings = {
-          ['\\'] = 'close_window',
-        },
+      follow_current_file = { enabled = true }, -- highlight the active file
+      hijack_netrw_behavior = 'open_default', -- replace netrw
+      filtered_items = { hide_dotfiles = false }, -- show dotfiles if you like
+      use_libuv_file_watcher = true, -- auto-refresh on change
+    },
+
+    default_component_configs = {
+      indent = {
+        with_markers = true,
+        with_expanders = true, -- VS Code-style twisty arrows
       },
-      hijack_netrw_behavior = 'disabled', -- or "open_default" / "open_current"
+      git_status = {
+        symbols = { added = 'A', modified = 'M', deleted = 'D' },
+      },
+      icon = {
+        folder_closed = '',
+        folder_open = '',
+        folder_empty = '',
+      },
+    },
+
+    window = {
+      width = 32,
+      mappings = {
+        ['<space>'] = 'toggle_node',
+        ['<cr>'] = 'open',
+        ['a'] = 'add', -- new file
+        ['d'] = 'delete',
+        ['r'] = 'rename',
+      },
     },
   },
 }

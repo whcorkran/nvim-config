@@ -66,12 +66,11 @@ return {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   border = false,
-        -- },
+        defaults = {
+          border = false,
+        },
         pickers = {
           buffers = dropdown {
-            border = false,
             previewer = false,
             layout_config = { width = 0.45, height = 0.35 },
             sort_mru = true,
@@ -89,7 +88,6 @@ return {
             override_file_sorter = true,
           },
           file_browser = {
-            hijack_netrw = true,
             grouped = true,
             select_buffer = true,
             sorting_strategy = 'ascending',
