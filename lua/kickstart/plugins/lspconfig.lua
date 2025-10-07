@@ -209,8 +209,16 @@ return {
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+      -- warn if clang can't find project root
+      if not vim.loop.fs_stat 'build/compile_commands.json' then
+        vim.notify('clangd: compile_commands.json not found, generate with cmake', vim.log.levels.WARN)
+      end
+
       local servers = {
-        clangd = {},
+        clangd = {
+          compile_json = { 'clangd', '--compile-commands-dir=build' },
+        },
         -- gopls = {},
         pyright = {},
         -- rust_analyzer = {},
