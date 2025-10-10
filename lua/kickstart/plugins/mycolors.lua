@@ -7,7 +7,6 @@ return {
         theme = 'wave',
         overrides = function(colors)
           local theme = colors.theme
-
           return {
             NormalFloat = { bg = 'none' },
             FloatBorder = { bg = 'none' },
@@ -32,8 +31,24 @@ return {
           }
         end,
       }
-      vim.cmd 'colorscheme kanagawa'
       vim.cmd 'highlight MatchParen gui=underline cterm=underline'
+      -- vim.cmd 'colorscheme kanagawa'
+    end,
+  },
+  { ---
+    'ellisonleao/gruvbox.nvim',
+    priority = 900,
+    config = function()
+      require('gruvbox').setup {
+        italic = {
+          strings = false,
+          emphasis = true,
+          comments = true,
+          operators = false,
+          folds = true,
+        },
+      }
+      vim.cmd 'colorscheme gruvbox'
     end,
   },
 
@@ -43,28 +58,6 @@ return {
     priority = 900,
     config = function()
       require('nightfox').setup {}
-    end,
-  },
-
-  {
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 900,
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('catppuccin').setup {
-        flavour = 'frappe',
-        integrations = {
-          telescope = {
-            enabled = true,
-            style = 'borderless',
-          },
-        },
-        styles = {
-          comments = {}, -- Disable italics in comments
-        },
-      }
     end,
   },
 }

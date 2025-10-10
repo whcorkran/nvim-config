@@ -101,7 +101,11 @@ return {
         },
         pickers = {
           buffers = dropdown {
+            border = true,
             previewer = false,
+            results_title = false,
+            prompt_title = false,
+            winblend = 0,
             layout_config = { width = 0.45, height = 0.35 },
             sort_mru = true,
             path_display = { 'tail' },
@@ -124,7 +128,6 @@ return {
             hidden = false,
             initial_mode = 'normal',
           },
-          buffers = { border = true },
         },
       }
 
