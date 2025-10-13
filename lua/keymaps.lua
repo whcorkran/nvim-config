@@ -9,18 +9,29 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- close nvim if we enter the empty buffer
 vim.keymap.set('n', 'Q', function()
   local buffers = vim.fn.getbufinfo { buflisted = 1 }
-
-  if #buffers <= 1 then
-    vim.cmd ':q'
+  if #buffers > 1 then
+    vim.cmd 'bp | bd #'
   else
-    vim.cmd ':bd'
+    vim.cmd 'enew | q'
   end
 end, { desc = 'Close Buffer' })
 
 -- buffer cycling
 vim.keymap.set('n', '<Tab>', function()
-  vim.cmd ':bn'
+  if vim.bo.filetype ~= 'neo-tree' then
+    vim.cmd ':bn'
+  end
 end, { desc = 'Cycle between buffers' })
+
+-- split a file into a new tmux pane
+vim.api.nvim_create_user_command('SplitTmux', function()
+  local file = vim.fn.expand '%:p'
+  local line = vim.fn.line '.'
+  vim.fn.system(string.format('tmux split-window -h "nvim +%d %s"', line, file))
+end, {})
+vim.keymap.set('n', '<leader>l', function()
+  vim.cmd ':SplitTmux'
+end)
 
 -- Move current line up/down
 vim.keymap.set('n', '<A-j>', ':m .+1<CR>==')

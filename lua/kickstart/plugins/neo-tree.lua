@@ -14,6 +14,7 @@ return {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   opts = {
+    close_if_last_window = true,
     filesystem = {
       follow_current_file = { enabled = true }, -- highlight the active file
       filtered_items = { hide_dotfiles = false }, -- show dotfiles if you like

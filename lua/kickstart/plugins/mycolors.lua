@@ -32,7 +32,7 @@ return {
         end,
       }
       vim.cmd 'highlight MatchParen gui=underline cterm=underline'
-      -- vim.cmd 'colorscheme kanagawa'
+      vim.cmd 'colorscheme kanagawa'
     end,
   },
   { ---
@@ -48,7 +48,7 @@ return {
           folds = true,
         },
       }
-      vim.cmd 'colorscheme gruvbox'
+      -- vim.cmd 'colorscheme gruvbox'
     end,
   },
 
