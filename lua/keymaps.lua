@@ -29,9 +29,9 @@ vim.api.nvim_create_user_command('SplitTmux', function()
   local line = vim.fn.line '.'
   vim.fn.system(string.format('tmux split-window -h "nvim +%d %s"', line, file))
 end, {})
-vim.keymap.set('n', '<leader>l', function()
+vim.keymap.set('n', '<leader>w', function()
   vim.cmd ':SplitTmux'
-end)
+end, { desc = 'Open file in new split' })
 
 -- Move current line up/down
 vim.keymap.set('n', '<A-j>', ':m .+1<CR>==')
@@ -40,6 +40,10 @@ vim.keymap.set('n', '<A-k>', ':m .-2<CR>==')
 -- Move selected block up/down
 vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv")
+
+-- Keep selection when indenting/deindenting in visual mode
+vim.keymap.set('v', '<', '<gv', { noremap = true, silent = true })
+vim.keymap.set('v', '>', '>gv', { noremap = true, silent = true })
 
 -- Show diagnostic
 vim.keymap.set('n', '<leader>e', function()
@@ -59,6 +63,13 @@ vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+
+-- [[ Insert Mode]]
+-- alt delete word
+vim.keymap.set('i', '<M-BS>', '<C-W>', { desc = 'Delete previous word', noremap = true, silent = true })
+
+-- ctrl delete line
+vim.keymap.set('i', '<C-BS>', '<C-o>d0', { desc = 'Delete previous line', noremap = true, silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`

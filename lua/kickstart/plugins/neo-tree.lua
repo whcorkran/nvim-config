@@ -11,14 +11,32 @@ return {
   },
   lazy = false,
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    {
+      '\\',
+      function()
+        require('neo-tree.command').execute {
+          toggle = true,
+          source = 'filesystem',
+          position = 'left',
+          reveal_force_cwd = true,
+        }
+      end,
+      desc = 'NeoTree reveal',
+      silent = true,
+    },
   },
   opts = {
+    hidden_root_node = true,
+    retain_hidden_root_indent = true,
     close_if_last_window = true,
     filesystem = {
       follow_current_file = { enabled = true }, -- highlight the active file
       filtered_items = { hide_dotfiles = false }, -- show dotfiles if you like
       use_libuv_file_watcher = true, -- auto-refresh on change
+      -- never show these
+      never_show = {
+        '.DS_Store',
+      },
     },
 
     default_component_configs = {

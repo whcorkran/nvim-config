@@ -212,6 +212,17 @@ return {
 
       local servers = {
         clangd = {
+          cmd = {
+            'clangd',
+            '--background-index',
+            '--clang-tidy',
+            '--completion-style=detailed',
+            '--header-insertion=iwyu',
+            '--cross-file-rename',
+            '--compile-commands-dir=build', -- Tell clangd where to find CMake's database
+          },
+          filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
+          root_dir = require('lspconfig.util').root_pattern('compile_commands.json', 'build', '.git'),
           compile_json = { 'clangd', '--compile-commands-dir=build' },
           on_attach = function()
             -- warn if clang can't find project root
