@@ -35,7 +35,7 @@ return {
   --   end,
   -- },
 
-  { ---
+ {
     'ellisonleao/gruvbox.nvim',
     priority = 900,
     config = function()
@@ -48,7 +48,6 @@ return {
           folds = true,
         },
       }
-      -- vim.cmd 'colorscheme gruvbox'
     end,
   },
   {

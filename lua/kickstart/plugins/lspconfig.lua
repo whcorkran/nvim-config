@@ -219,7 +219,7 @@ return {
             '--completion-style=detailed',
             '--header-insertion=iwyu',
             '--cross-file-rename',
-            '--compile-commands-dir=build', -- Tell clangd where to find CMake's database
+            '--compile-commands-dir=build',
           },
           filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
           root_dir = require('lspconfig.util').root_pattern('compile_commands.json', 'build', '.git'),
@@ -257,6 +257,13 @@ return {
           },
         },
       }
+      -- C++ formatting
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        pattern = { '*.c', '*.cpp', '*.h', '*.hpp' },
+        callback = function()
+          vim.lsp.buf.format { async = false }
+        end,
+      })
 
       -- Activate python venv in nvim cwd with this hook
       vim.api.nvim_create_user_command('UseVenv', function()
@@ -311,6 +318,8 @@ return {
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'ruff',
+        'cpplint',
+        'clang-format',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
