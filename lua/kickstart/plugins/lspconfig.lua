@@ -1,4 +1,5 @@
 -- LSP Plugins
+
 return {
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -232,8 +233,24 @@ return {
           end,
         },
         -- gopls = {},
-        pyright = {},
-        -- rust_analyzer = {},
+        --
+        basedpyright = {
+          cmd = vim.env.CONDA_PREFIX and {
+            'env',
+            'VIRTUAL_ENV=' .. vim.env.CONDA_PREFIX,
+            'basedpyright-langserver',
+            '--stdio',
+          } or { 'basedpyright-langserver', '--stdio' },
+          settings = {
+            basedpyright = {
+              analysis = {
+                typeCheckingMode = 'basic', -- or "strict", "off"
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
+              },
+            },
+          },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -265,42 +282,6 @@ return {
         end,
       })
 
-      -- Activate python venv in nvim cwd with this hook
-      vim.api.nvim_create_user_command('UseVenv', function()
-        local groot = vim.fn.FugitiveGitDir()
-        local venv = vim.fn.fnamemodify(groot, ':h') .. '/.venv'
-        if vim.fn.isdirectory(venv) == 1 then
-          vim.env.VIRTUAL_ENV = venv
-          vim.env.PATH = venv .. '/bin:' .. vim.env.PATH
-          vim.notify('Using venv: ' .. venv, vim.log.levels.INFO)
-          vim.cmd 'LspRestart pyright'
-        else
-          vim.notify('No .venv found at git root ' .. venv, vim.log.levels.WARN)
-        end
-      end, { desc = 'Use local .venv at git root for Pyright and restart LSP' })
-
-      -- Activate conda env with this hook
-      vim.api.nvim_create_user_command('UseConda', function(opts)
-        local env = opts.args
-        if env == '' then
-          vim.notify('No environment specified', vim.log.levels.WARN)
-          return
-        end
-        local path = vim.fn.expand('~/anaconda3/envs/' .. env)
-
-        if vim.fn.isdirectory(path) == 0 then
-          vim.notify('Environment not found', vim.log.levels.WARN)
-          return
-        end
-        vim.env.CONDA_PREFIX = path
-        vim.env.CONDA_DEFAULT_ENV = env
-        vim.env.CONDA_SHLVL = 1
-        vim.env.VIRTUAL_ENV = path
-        vim.env.PATH = path .. '/bin:' .. vim.env.PATH
-        vim.notify('Activated conda env: ' .. env)
-        vim.cmd 'LspRestart pyright'
-      end, { desc = 'Use an existing conda (provided as an argument) environment for Pyright and restart LSP', nargs = 1 })
-
       -- Ensure the servers and tools above are installed
       --
       -- To check the current status of installed tools and/or manually install
@@ -328,6 +309,7 @@ return {
         automatic_installation = false,
         handlers = {
           function(server_name)
+            print('Handled', server_name)
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
