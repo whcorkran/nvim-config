@@ -99,6 +99,17 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHo
   command = 'checktime',
 })
 
+-- Restore cursor on exit
+vim.api.nvim_create_autocmd('VimLeave', {
+  callback = function()
+    vim.opt.guicursor = ''
+    vim.cmd 'set guicursor=a:ver25-blinkon1' -- blinking vertical bar
+    -- Send terminal escape code
+    io.write '\027[5 q'
+    io.flush()
+  end,
+})
+
 -- [[ Setting options ]]
 require 'options'
 
@@ -110,6 +121,17 @@ require 'lazy-bootstrap'
 
 -- [[ Configure and install plugins ]]
 require 'lazy-plugins'
+
+-- load colorscheme from file
+local path = vim.fn.stdpath 'data' .. '/last_colorscheme'
+local lines = vim.fn.readfile(path)
+
+if #lines > 0 then
+  local scheme = vim.trim(lines[1])
+  if not pcall(vim.cmd.colorscheme, scheme) then
+    vim.notify('Colorscheme not found: ' .. scheme)
+  end
+end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

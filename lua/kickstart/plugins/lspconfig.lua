@@ -203,7 +203,7 @@ return {
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
-      --
+
       --  Add any additional override configuration in the following tables. Available keys are:
       --  - cmd (table): Override the default command used to start the server
       --  - filetypes (table): Override the default list of associated filetypes for the server
@@ -235,16 +235,35 @@ return {
         -- gopls = {},
         --
         basedpyright = {
-          cmd = vim.env.CONDA_PREFIX and {
-            'env',
-            'VIRTUAL_ENV=' .. vim.env.CONDA_PREFIX,
-            'basedpyright-langserver',
-            '--stdio',
-          } or { 'basedpyright-langserver', '--stdio' },
+          cmd = (function()
+            local conda_prefix = vim.fn.getenv 'CONDA_PREFIX'
+            local venv = vim.fn.getenv 'VIRTUAL_ENV'
+
+            if conda_prefix ~= vim.NIL and conda_prefix ~= '' then
+              -- Conda environment is active
+              return {
+                'env',
+                'VIRTUAL_ENV=' .. conda_prefix,
+                'basedpyright-langserver',
+                '--stdio',
+              }
+            elseif venv ~= vim.NIL and venv ~= '' then
+              -- Virtual environment is active
+              return {
+                'env',
+                'VIRTUAL_ENV=' .. venv,
+                'basedpyright-langserver',
+                '--stdio',
+              }
+            else
+              -- No environment, use global python
+              return { 'basedpyright-langserver', '--stdio' }
+            end
+          end)(),
           settings = {
             basedpyright = {
               analysis = {
-                typeCheckingMode = 'basic', -- or "strict", "off"
+                typeCheckingMode = 'basic',
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
               },
@@ -274,6 +293,18 @@ return {
           },
         },
       }
+
+      -- Configure all servers using vim.lsp.config() (Neovim 0.11+)
+      -- This must be done BEFORE setting up mason-lspconfig
+      for server_name, server_config in pairs(servers) do
+        -- Merge capabilities into the server config
+        local config = vim.tbl_deep_extend('force', {
+          capabilities = capabilities,
+        }, server_config)
+
+        vim.lsp.config(server_name, config)
+      end
+
       -- C++ formatting
       vim.api.nvim_create_autocmd('BufWritePre', {
         pattern = { '*.c', '*.cpp', '*.h', '*.hpp' },
@@ -305,19 +336,11 @@ return {
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      -- mason-lspconfig will automatically enable installed servers
+      -- No handlers needed in v2.0+!
       require('mason-lspconfig').setup {
-        ensure_installed = {},
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            vim.notify('HANDLER: ' .. server_name, vim.log.levels.INFO) -- This shows a popup
-            print('HANDLER CALLED FOR:', server_name) -- This goes to :messages
-
-            local server = servers[server_name] or {}
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        ensure_installed = servers,
+        automatic_enable = true, -- Automatically calls vim.lsp.enable() for installed servers
       }
     end,
   },

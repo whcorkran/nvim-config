@@ -145,6 +145,8 @@ return {
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
+      local state = require 'telescope.actions.state'
+      local actions = require 'telescope.actions'
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
@@ -155,10 +157,26 @@ return {
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><Space>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
       vim.keymap.set('n', '<leader>sc', function()
-        builtin.colorscheme {
+        builtin.colorscheme(require('telescope.themes').get_ivy {
           ignore_builtins = true,
-        }
+          enable_preview = true,
+
+          attach_mappings = function(prompt_bufnr, map)
+            local function save_color()
+              local entry = state.get_selected_entry()
+              local color = entry.value
+              local color_file = vim.fn.stdpath 'data' .. '/last_colorscheme'
+              vim.fn.writefile({ color }, color_file)
+              actions.select_default(prompt_bufnr)
+            end
+
+            map('i', '<CR>', save_color)
+            map('n', '<CR>', save_color)
+            return true
+          end,
+        })
       end, { desc = '[S]earch [C]olorscheme' })
 
       -- Slightly advanced example of overriding default behavior and theme

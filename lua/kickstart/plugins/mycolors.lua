@@ -4,8 +4,17 @@ return {
     name = 'catppuccin',
     priority = 1000,
     config = function()
-      flavour = 'mocha'
-      -- vim.cmd.colorscheme 'catppuccin-macchiato'
+      require('catppuccin').setup {
+        flavour = 'macchiato',
+      }
+      -- vim.cmd.colorscheme 'catppuccin'
+    end,
+  },
+  {
+    'rose-pine/neovim',
+    name = 'rose-pine',
+    config = function()
+      require('rose-pine').setup {}
     end,
   },
   {
@@ -41,10 +50,11 @@ return {
         end,
       }
       vim.cmd 'highlight MatchParen gui=underline cterm=underline'
-      vim.cmd.colorscheme 'kanagawa'
     end,
   },
 
+  { 'bluz71/vim-nightfly-colors', name = 'nightfly', lazy = false, priority = 1000 },
+  { 'bluz71/vim-moonfly-colors', name = 'moonfly', lazy = false, priority = 1000 },
   {
     'ellisonleao/gruvbox.nvim',
     priority = 1000,
@@ -80,6 +90,16 @@ return {
     priority = 1000,
     config = function()
       require('nightfox').setup {}
+    end,
+  },
+  {
+    'vague-theme/vague.nvim',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other plugins
+    config = function()
+      require('vague').setup {
+        -- optional configuration here
+      }
     end,
   },
 }
