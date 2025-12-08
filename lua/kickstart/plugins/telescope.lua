@@ -1,10 +1,3 @@
--- NOTE: Plugins can specify dependencies.
---
--- The dependencies are proper plugin specifications as well - anything
--- you do for a plugin at the top level, you can do for a dependency.
---
--- Use the `dependencies` key to specify the dependencies of a particular plugin
-
 return {
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
@@ -13,13 +6,7 @@ return {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for installation instructions
         'nvim-telescope/telescope-fzf-native.nvim',
-
-        -- `build` is used to run some command when the plugin is installed/updated.
-        -- This is only run then, not every time Neovim starts up.
         build = 'make',
-
-        -- `cond` is a condition used to determine whether this plugin should be
-        -- installed and loaded.
         cond = function()
           return vim.fn.executable 'make' == 1
         end,
@@ -29,62 +16,33 @@ return {
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
-      -- Telescope is a fuzzy finder that comes with a lot of different things that
-      -- it can fuzzy find! It's more than just a "file finder", it can search
-      -- many different aspects of Neovim, your workspace, LSP, and more!
-      --
-      -- The easiest way to use Telescope, is to start by doing something like:
-      --  :Telescope help_tags
-      --
-      -- After running this command, a window will open up and you're able to
-      -- type in the prompt window. You'll see a list of `help_tags` options and
-      -- a corresponding preview of the help.
-      --
-      -- Two important keymaps to use while in Telescope are
-      --  - Insert mode: <c-/>
-      --  - Normal mode: ?
-      --
-      -- This opens a window that shows you all of the keymaps for the current
-      -- Telescope picker. This is really useful to discover what Telescope can
-      -- do as well as how to actually do it!
-
-      -- [[ Configure Telescope ]]
-      -- See `:help telescope` and `:help telescope.setup()`
-
       -- Let 'Q' cleanly close Telescope pickers
       vim.api.nvim_create_autocmd('FileType', {
         pattern = { 'TelescopePrompt', 'TelescopeResults' },
         callback = function(ev)
           vim.keymap.set('n', 'Q', function()
-            -- uses Telescope’s actions to close
             pcall(require('telescope.actions').close, require('telescope.actions.state').get_current_picker(ev.buf))
           end, { buffer = ev.buf, silent = true })
         end,
       })
-      local dropdown = require('telescope.themes').get_dropdown
-      require('telescope').setup {
-        -- You can put your default mappings / updates / etc. in here
-        --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        defaults = {
-          border = false,
-          layout_strategy = 'flex',
-          layout_config = {
-            horizontal = {
-              preview_width = 0.66,
-              prompt_position = 'top',
-            },
-            vertical = { preview_height = 0.55 },
-            width = 0.96,
-            height = 0.92,
-          },
-          sorting_strategy = 'ascending',
+
+      local telescope = require 'telescope'
+      local themes = require 'telescope.themes'
+      local ivy = themes.get_ivy
+      local dropdown = themes.get_dropdown
+
+      telescope.setup {
+        -- Global default: Ivy theme for all pickers
+        defaults = ivy {
+
           prompt_prefix = '   ',
           selection_caret = ' ',
           results_title = false,
           dynamic_preview_title = true,
           winblend = 4, -- subtle transparency
-          path_display = { 'smart', 'truncate' }, -- filename-forward, short paths
+
+          path_display = { 'smart', 'truncate' },
+
           vimgrep_arguments = {
             'rg',
             '--follow',
@@ -98,9 +56,12 @@ return {
             '-g',
             '!**/.git/*',
           },
+
+          sorting_strategy = 'ascending',
         },
+
         pickers = {
-          buffers = dropdown {
+          buffers = ivy {
             border = true,
             previewer = false,
             results_title = false,
@@ -111,34 +72,53 @@ return {
             path_display = { 'tail' },
           },
         },
+
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
           fzf = {
             case_mode = 'smart_case',
-            fuzzy = true, -- alphabetic sort
+            fuzzy = true,
             override_generic_sorter = true,
             override_file_sorter = true,
           },
+
+          -- File browser: big window, preview, prompt at bottom
           file_browser = {
             grouped = true,
             select_buffer = true,
             sorting_strategy = 'ascending',
             hidden = false,
             initial_mode = 'normal',
+
+            layout_strategy = 'flex',
+            layout_config = {
+              width = 0.96,
+              height = 0.92,
+              horizontal = {
+                preview_width = 0.66,
+                prompt_position = 'bottom',
+              },
+              vertical = {
+                preview_height = 0.55,
+                prompt_position = 'bottom',
+              },
+            },
+
+            previewer = true,
           },
         },
       }
 
       -- Enable Telescope extensions if they are installed
-      pcall(require('telescope').load_extension, 'fzf')
-      pcall(require('telescope').load_extension, 'ui-select')
-      pcall(require('telescope').load_extension, 'file_browser')
+      pcall(telescope.load_extension, 'fzf')
+      pcall(telescope.load_extension, 'ui-select')
+      pcall(telescope.load_extension, 'file_browser')
 
       -- File Browser config
       vim.keymap.set('n', '<leader>fb', function()
-        require('telescope').extensions.file_browser.file_browser {
+        telescope.extensions.file_browser.file_browser {
           path = vim.fn.expand '%:p:h',
         }
       end, { desc = 'File Browser' })
@@ -147,6 +127,7 @@ return {
       local builtin = require 'telescope.builtin'
       local state = require 'telescope.actions.state'
       local actions = require 'telescope.actions'
+
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
@@ -159,7 +140,7 @@ return {
       vim.keymap.set('n', '<leader><Space>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       vim.keymap.set('n', '<leader>sc', function()
-        builtin.colorscheme(require('telescope.themes').get_ivy {
+        builtin.colorscheme(themes.get_ivy {
           ignore_builtins = true,
           enable_preview = true,
 
@@ -181,15 +162,12 @@ return {
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        builtin.current_buffer_fuzzy_find(dropdown {
           winblend = 10,
           previewer = false,
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
-      -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
           grep_open_files = true,
@@ -197,7 +175,6 @@ return {
         }
       end, { desc = '[S]earch [/] in Open Files' })
 
-      -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
